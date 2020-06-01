@@ -16,18 +16,24 @@ docker network create --driver overlay monitoring-network
 
 ## Create a stack with your prefer version
 
-### Zabbix 4.4
+### Zabbix 5.0
 
 - Change the branch
 
 ```bash
-git checkout zabbix44
+git checkout zabbix50
 ```
 
 - Deploy stack
 
 ```bash
-docker stack deploy -c docker-compose.yml zabbix44
+docker stack deploy -c docker-compose.yml zabbix50
+```
+
+- Access URL
+
+```bash
+http://127.0.0.1:8081
 ```
 
 - Remove stack
@@ -35,3 +41,4 @@ docker stack deploy -c docker-compose.yml zabbix44
 ```bash
 docker stack rm zabbix44
 ```
+
