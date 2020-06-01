@@ -39,8 +39,8 @@ services:
   zabbix-frontend:
     image: zabbix/zabbix-web-nginx-mysql:alpine-4.4-latest
     environment:
-      - ZBX_SERVER_HOST=zabbix44_zabbix-server
-      - DB_SERVER_HOST=zabbix44_mysql-zabbix
+      - ZBX_SERVER_HOST=zabbix50_zabbix-server
+      - DB_SERVER_HOST=zabbix50_mysql-zabbix
       - MYSQL_USER=zabbix
       - MYSQL_PASSWORD=zabbix
       - MYSQL_DATABASE=zabbix
