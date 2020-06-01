@@ -1,0 +1,59 @@
+version: "3.7"
+
+x-deploy: &template-deploy
+  replicas: 1
+  restart_policy:
+    condition: on-failure
+  update_config:
+    parallelism: 1
+    delay: 10s
+services:
+  mysql-zabbix:
+    image: mysql:8.0.20
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_bin
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=zabbix
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=zabbix
+      - MYSQL_ROOT_HOST=%
+    networks:
+      - "monitoring-network"
+    volumes:
+      - ./mysql-zabbix40:/var/lib/mysql
+    deploy: *template-deploy
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:centos-4.0-latest
+    env_file: 
+      - ./envs/zabbix-server/common.env
+      - ./envs/zabbix-server/zabbix40.env
+    networks:
+      - "monitoring-network"
+    volumes:
+        - ./data_internal/zabbix-server/externalscripts:/usr/lib/zabbix/externalscripts
+        - ./data_internal/zabbix-server/alertscripts:/usr/lib/zabbix/alertscripts
+    ports:
+      - "14051:10051"
+    deploy: *template-deploy
+  zabbix-frontend:
+    image: zabbix/zabbix-web-nginx-mysql:alpine-4.0-latest
+    env_file:
+      - ./envs/zabbix-frontend/common.env
+      - ./envs/zabbix-frontend/zabbix40.env
+    ports:
+      - "8040:8080"
+    networks:
+      - "monitoring-network"
+    deploy: *template-deploy
+  zabbix-proxy:
+    image: zabbix/zabbix-proxy-sqlite3:centos-4.0-latest
+    env_file: 
+      - ./envs/zabbix-proxy/common.env
+      - ./envs/zabbix-proxy/zabbix40.env
+    networks:
+      - "monitoring-network"
+    deploy: *template-deploy
+
+networks: 
+  monitoring-network:
+    external: true
