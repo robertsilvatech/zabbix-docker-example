@@ -39,6 +39,6 @@ http://127.0.0.1:8081
 - Remove stack
 
 ```bash
-docker stack rm zabbix44
+docker stack rm zabbix50
 ```
 
