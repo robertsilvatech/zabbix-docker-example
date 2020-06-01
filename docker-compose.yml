@@ -17,15 +17,13 @@ services:
       - MYSQL_USER=zabbix
       - MYSQL_PASSWORD=zabbix
       - MYSQL_ROOT_HOST=%
-    ports:
-      - "3306:3306"
     networks:
       - "monitoring-network"
     volumes:
       - ./mysql:/var/lib/mysql
     deploy: *template-deploy
   zabbix-server:
-    image: zabbix/zabbix-server-mysql:centos-4.4.5
+    image: zabbix/zabbix-server-mysql:centos-5.0-latest
     env_file: 
       - ./envs/zabbix-server/common.env
     networks:
@@ -34,13 +32,13 @@ services:
         - ./data_internal/zabbix-server/externalscripts:/usr/lib/zabbix/externalscripts
         - ./data_internal/zabbix-server/alertscripts:/usr/lib/zabbix/alertscripts
     ports:
-      - "10051:10051"
+      - "10151:10051"
     deploy: *template-deploy
   zabbix-frontend:
-    image: zabbix/zabbix-web-nginx-mysql:alpine-4.4-latest
+    image: zabbix/zabbix-web-nginx-mysql:alpine-5.0.1
     environment:
-      - ZBX_SERVER_HOST=zabbix50_zabbix-server
-      - DB_SERVER_HOST=zabbix50_mysql-zabbix
+      - ZBX_SERVER_HOST=zabbix50-sample_zabbix-server
+      - DB_SERVER_HOST=zabbix50-sample_mysql-zabbix
       - MYSQL_USER=zabbix
       - MYSQL_PASSWORD=zabbix
       - MYSQL_DATABASE=zabbix
@@ -49,12 +47,12 @@ services:
       - ZBX_SERVER_NAME=Zabbix
       - ZBX_MEMORYLIMIT=1024M
     ports:
-      - "80:8080"
+      - "8081:8080"
     networks:
       - "monitoring-network"
     deploy: *template-deploy
   zabbix-proxy:
-    image: zabbix/zabbix-proxy-sqlite3:centos-4.4.5
+    image: zabbix/zabbix-proxy-sqlite3:centos-5.0.1
     env_file: 
       - ./envs/zabbix-proxy/common.env
     networks:
